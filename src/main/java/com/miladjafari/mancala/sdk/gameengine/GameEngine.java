@@ -12,8 +12,6 @@ import java.util.function.Consumer;
 
 public class GameEngine {
 
-    private Map<String, Map<Player, Playground>> couples = new HashMap<>();
-
     private Map<Player, Playground> players;
     private Player nextTurn;
     private Boolean isGameOver = false;

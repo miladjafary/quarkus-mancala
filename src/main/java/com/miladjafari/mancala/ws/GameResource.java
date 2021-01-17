@@ -1,7 +1,7 @@
-package com.miladjafari;
+package com.miladjafari.mancala.ws;
 
-import com.miladjafari.mancala.sdk.exception.GameRoomException;
-import com.miladjafari.mancala.service.GameRoomService;
+import com.miladjafari.mancala.sdk.exception.GameManagerException;
+import com.miladjafari.mancala.service.GameManagerService;
 
 import javax.inject.Inject;
 import javax.json.Json;
@@ -19,13 +19,13 @@ import javax.ws.rs.core.UriInfo;
 public class GameResource {
 
     @Inject
-    GameRoomService gameRoomService;
+    GameManagerService gameManagerService;
 
     @POST
     @Path("/games")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createNew(@Context UriInfo uriInfo) {
-        String gameId = gameRoomService.createNewRoom();
+        String gameId = gameManagerService.createNewRoom();
         JsonObject response = Json.createObjectBuilder()
                                   .add("id", gameId)
                                   .add("uri", uriInfo.getAbsolutePath() + "/" + gameId)
@@ -41,9 +41,9 @@ public class GameResource {
             @PathParam("playerName") String playerNames
     ) {
         try {
-            gameRoomService.addPlayer(gameId, playerNames);
+            gameManagerService.addPlayer(gameId, playerNames);
             return Response.ok().build();
-        } catch (GameRoomException exception) {
+        } catch (GameManagerException exception) {
             JsonObject errorResponse = Json.createObjectBuilder()
                                            .add("error", exception.getMessage())
                                            .build();
