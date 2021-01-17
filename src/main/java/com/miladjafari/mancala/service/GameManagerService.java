@@ -56,9 +56,9 @@ public class GameManagerService {
     }
 
     public void play(String gameId, String player, Integer pitIndex) {
+        String errorMessage = String.format("Game with id [%s] could not find", gameId);
         GameEngine gameEngineStarter = gameEngineRepository.findById(gameId)
-                                                           .orElseThrow(() -> new GameManagerException(
-                                                                   String.format("Could not find game %s", gameId)));
+                                                           .orElseThrow(() -> new GameManagerException(errorMessage));
         try {
             gameEngineStarter.play(player, pitIndex);
         } catch (GameEngineException exception) {

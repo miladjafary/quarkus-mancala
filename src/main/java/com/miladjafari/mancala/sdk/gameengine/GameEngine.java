@@ -46,7 +46,7 @@ public class GameEngine {
             throw new GameEngineException(String.format("It is not \"%s\" turn", player));
         }
 
-        // reomcmeoe
+
         Pit pit = ownerPlayground.getPit(selectedPitIndex);
         validatingSelectedPit(pit);
 
