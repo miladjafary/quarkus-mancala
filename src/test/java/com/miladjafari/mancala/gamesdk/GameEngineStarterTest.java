@@ -1,6 +1,5 @@
 package com.miladjafari.mancala.gamesdk;
 
-import com.miladjafari.mancala.sdk.Player;
 import com.miladjafari.mancala.sdk.Playground;
 import com.miladjafari.mancala.sdk.exception.GameEngineStarterException;
 import com.miladjafari.mancala.sdk.gameengine.GameEngine;
@@ -23,30 +22,30 @@ public class GameEngineStarterTest {
     private static final Integer SIX_STONES_IN_EACH_PITS = 6;
 
     private static void assertPlayers(
-            Map<Player, Playground> expectedPlayers,
-            Map<Player, Playground> actualPitsPlayers) {
+            Map<String, Playground> expectedPlayers,
+            Map<String, Playground> actualPitsPlayers) {
 
         assertEquals(expectedPlayers.size(), actualPitsPlayers.size());
 
         expectedPlayers.forEach(((expectedPlayer, expectedPlayground) -> {
             Playground actualPlayground = actualPitsPlayers.get(expectedPlayer);
-            Player actualPlayer = findPlayer(actualPitsPlayers.keySet(), expectedPlayer);
+            String actualPlayer = findPlayer(actualPitsPlayers.keySet(), expectedPlayer);
 
             assertEquals(expectedPlayer, actualPlayer);
             assertPlayground(expectedPlayground, actualPlayground);
         }));
     }
 
-    private static Player findPlayer(Set<Player> players, Player targetPlayer) {
+    private static String findPlayer(Set<String> players, String targetPlayer) {
         return players.stream().filter(player -> player.equals(targetPlayer)).collect(Collectors.toList()).get(0);
     }
 
     @Test
     public void testSuccessStartEngineIfEngineHasTwoPlayers() throws GameEngineStarterException {
-        Map<Player, Playground> expectedPlayers = createMockPlayers();
+        Map<String, Playground> expectedPlayers = createMockPlayers();
 
-        Player player1 = new Player("Milad");
-        Player player2 = new Player("Michael");
+        String player1 = "Milad";
+        String player2 = "Michael";
 
         GameEngine gameEngine = new GameEngineStarter()
                 .addPlayer(player1)
@@ -55,15 +54,15 @@ public class GameEngineStarterTest {
 
         assertNotNull(gameEngine);
 
-        Map<Player, Playground> actualPlayers = gameEngine.getPlayers();
+        Map<String, Playground> actualPlayers = gameEngine.getPlayers();
         assertPlayers(expectedPlayers, actualPlayers);
     }
 
     @Test
-    public void testFailStartEngineIfMoreThanTwoPlayerIsAddedToEngine() throws GameEngineStarterException {
-        Player player1 = new Player("Milad");
-        Player player2 = new Player("Michael");
-        Player player3 = new Player("Mihaela");
+    public void testFailStartEngineIfMoreThanTwoPlayerIsAddedToEngine() {
+        String player1 = "Milad";
+        String player2 = "Michael";
+        String player3 = "Mihaela";
 
         assertThrows(IllegalArgumentException.class, () ->
                 new GameEngineStarter()
@@ -76,14 +75,14 @@ public class GameEngineStarterTest {
 
     @Test
     public void testFailStartEngineIfLessThanTwoPlayerIsAddedToEngine() {
-        Player player1 = new Player("Milad");
+        String player1 = "Milad";
 
         assertThrows(GameEngineStarterException.class, () -> new GameEngineStarter().addPlayer(player1).start());
     }
 
     @Test
     public void testFailStartEngineIfPlayerIsDuplicated() {
-        Player player1 = new Player("Milad");
+        String player1 = "Milad";
         assertThrows(IllegalArgumentException.class, () ->
                 new GameEngineStarter()
                         .addPlayer(player1)
@@ -92,11 +91,11 @@ public class GameEngineStarterTest {
         );
     }
 
-    private Map<Player, Playground> createMockPlayers() {
-        Map<Player, Playground> players = new TreeMap<>();
+    private Map<String, Playground> createMockPlayers() {
+        Map<String, Playground> players = new TreeMap<>();
 
-        Player player1 = new Player("Milad");
-        Player player2 = new Player("Michael");
+        String player1 = "Milad";
+        String player2 = "Michael";
 
         players.put(player1, createMockPlayground());
         players.put(player2, createMockPlayground());

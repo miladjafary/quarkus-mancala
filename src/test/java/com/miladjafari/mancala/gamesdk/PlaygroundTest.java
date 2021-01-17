@@ -9,6 +9,8 @@ import java.util.List;
 
 import static com.miladjafari.mancala.gamesdk.GameAssert.assertPit;
 import static com.miladjafari.mancala.gamesdk.GameAssert.assertPits;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PlaygroundTest {
@@ -247,4 +249,35 @@ public class PlaygroundTest {
         List<Pit> actualPits = actualPlayground.getSmallPits();
         assertPits(expectedPits, actualPits);
     }
+
+    @Test
+    public void testSuccessCreateEqualPlayground() {
+        Playground firstPlayground = Playground.builder()
+                                               .numberOfPits(SIX_PITS)
+                                               .numberOfStonesInEachPit(SIX_STONES_IN_EACH_PITS)
+                                               .build();
+        Playground secondPlayground = Playground.builder()
+                                                .numberOfPits(SIX_PITS)
+                                                .numberOfStonesInEachPit(SIX_STONES_IN_EACH_PITS)
+                                                .build();
+
+        assertEquals(firstPlayground, secondPlayground);
+        assertEquals(firstPlayground.hashCode(), secondPlayground.hashCode());
+    }
+
+    @Test
+    public void testSuccessCreateNotEqualPlayground() {
+        Playground firstPlayground = Playground.builder()
+                                               .numberOfPits(7)
+                                               .numberOfStonesInEachPit(SIX_STONES_IN_EACH_PITS)
+                                               .build();
+        Playground secondPlayground = Playground.builder()
+                                                .numberOfPits(6)
+                                                .numberOfStonesInEachPit(SIX_STONES_IN_EACH_PITS)
+                                                .build();
+
+        assertNotEquals(firstPlayground, secondPlayground);
+        assertNotEquals(firstPlayground.hashCode(), secondPlayground.hashCode());
+    }
+
 }

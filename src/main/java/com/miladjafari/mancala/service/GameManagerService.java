@@ -2,7 +2,6 @@ package com.miladjafari.mancala.service;
 
 import com.miladjafari.mancala.repository.GameEngineRepository;
 import com.miladjafari.mancala.repository.GameEngineStarterRepository;
-import com.miladjafari.mancala.sdk.Player;
 import com.miladjafari.mancala.sdk.exception.GameEngineException;
 import com.miladjafari.mancala.sdk.exception.GameEngineStarterException;
 import com.miladjafari.mancala.sdk.exception.GameManagerException;
@@ -39,7 +38,7 @@ public class GameManagerService {
                                                                          .orElseThrow(() -> new GameManagerException(
                                                                                  "GameEngineStarter could not find"));
         try {
-            gameEngineStarter.addPlayer(new Player(playerName));
+            gameEngineStarter.addPlayer(playerName);
             startGameIfTwoPlayersExists(gameId, gameEngineStarter);
         } catch (IllegalArgumentException | GameEngineStarterException exception) {
             throw new GameManagerException(exception);
@@ -61,7 +60,7 @@ public class GameManagerService {
                                                            .orElseThrow(() -> new GameManagerException(
                                                                    String.format("Could not find game %s", gameId)));
         try {
-            gameEngineStarter.play(new Player(player), pitIndex);
+            gameEngineStarter.play(player, pitIndex);
         } catch (GameEngineException exception) {
             throw new GameManagerException(exception);
         }

@@ -1,42 +1,40 @@
 package com.miladjafari.mancala.sdk.gameengine;
 
 import com.miladjafari.mancala.sdk.Pit;
-import com.miladjafari.mancala.sdk.Player;
 import com.miladjafari.mancala.sdk.Playground;
 import com.miladjafari.mancala.sdk.exception.GameEngineException;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 public class GameEngine {
 
-    private Map<Player, Playground> players;
-    private Player nextTurn;
+    private final Map<String, Playground> players;
+    private String nextTurn;
     private Boolean isGameOver = false;
 
-    private Consumer<Map<Player, Playground>> onGameOver;
+    private final Consumer<Map<String, Playground>> onGameOver;
 
-    GameEngine(Map<Player, Playground> players, Player firstTurn, Consumer<Map<Player, Playground>> onGameOver) {
+    GameEngine(Map<String, Playground> players, String firstTurn, Consumer<Map<String, Playground>> onGameOver) {
         this.players = players;
         this.nextTurn = firstTurn;
         this.onGameOver = onGameOver;
     }
 
-    public Map<Player, Playground> getPlayers() {
+    public Map<String, Playground> getPlayers() {
         return players;
     }
 
-    public Player getNextTurn() {
+    public String getNextTurn() {
         return nextTurn;
     }
 
-    private Boolean isThePlayerTurn(Player player) {
+    private Boolean isThePlayerTurn(String player) {
         return (Optional.ofNullable(nextTurn).isPresent() && nextTurn.equals(player));
     }
 
-    public void play(Player player, Integer selectedPitIndex) throws GameEngineException {
+    public void play(String player, Integer selectedPitIndex) throws GameEngineException {
         Playground ownerPlayground = players.get(player);
         Playground opponentPlayground = players.get(findOpponentBy(player));
 
@@ -45,7 +43,7 @@ public class GameEngine {
         }
 
         if (!isThePlayerTurn(player)) {
-            throw new GameEngineException(String.format("It is not \"%s\" turn", player.getName()));
+            throw new GameEngineException(String.format("It is not \"%s\" turn", player));
         }
 
         // reomcmeoe
@@ -86,8 +84,8 @@ public class GameEngine {
         }
     }
 
-    public Player findOpponentBy(Player currentPlayer) {
-        for (Map.Entry<Player, Playground> entry : players.entrySet()) {
+    public String findOpponentBy(String currentPlayer) {
+        for (Map.Entry<String, Playground> entry : players.entrySet()) {
             if (!entry.getKey().equals(currentPlayer)) {
                 return entry.getKey();
             }
@@ -96,7 +94,7 @@ public class GameEngine {
         return null;
     }
 
-    private Player chooseNextTurnBy(Player currentPlayer, Boolean isLastStonePushedInBigPit) {
+    private String chooseNextTurnBy(String currentPlayer, Boolean isLastStonePushedInBigPit) {
         return (isLastStonePushedInBigPit) ? currentPlayer : findOpponentBy(currentPlayer);
     }
 }

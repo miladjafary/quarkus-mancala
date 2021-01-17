@@ -1,6 +1,5 @@
 package com.miladjafari.mancala.gamesdk.gameengine;
 
-import com.miladjafari.mancala.sdk.Player;
 import com.miladjafari.mancala.sdk.exception.GameEngineException;
 import org.junit.jupiter.api.Test;
 
@@ -52,9 +51,9 @@ public class GameEngineTurnTest extends AbstractGameEngineTest {
     }
 
     @Test
-    public void testFailPlayIfItIsThePlayer1TurnButPlayer2PlayTheGame() throws GameEngineException {
+    public void testFailPlayIfItIsThePlayer1TurnButPlayer2PlayTheGame() {
         final Integer PIT_INDEX = 1;
-        Player playByPlayerWhoAreNotHaveTurn = player2;
+        String playByPlayerWhoAreNotHaveTurn = player2;
 
         assertThrows(GameEngineException.class, () -> gameEngine.play(playByPlayerWhoAreNotHaveTurn, PIT_INDEX));
     }

@@ -1,7 +1,6 @@
 package com.miladjafari.mancala.gamesdk;
 
 import com.miladjafari.mancala.sdk.Pit;
-import com.miladjafari.mancala.sdk.Player;
 import com.miladjafari.mancala.sdk.Playground;
 
 import java.util.Comparator;
@@ -13,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameAssert {
 
-    public static void assertPlayer(Player expected, Player actual) {
-        assertEquals(expected.getName(), actual.getName());
+    public static void assertPlayer(String expected, String actual) {
+        assertEquals(expected, actual);
     }
 
     public static void assertPlayground(Playground expectedPlayground, Playground actualPlayground) {
