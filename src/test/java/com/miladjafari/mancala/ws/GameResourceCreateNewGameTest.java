@@ -25,7 +25,7 @@ public class GameResourceCreateNewGameTest {
                 .statusCode(Response.Status.CREATED.getStatusCode())
                 .assertThat()
                 .body("id", notNullValue())
-                .body("uri", notNullValue());
+                .body("url", notNullValue());
     }
 
 }

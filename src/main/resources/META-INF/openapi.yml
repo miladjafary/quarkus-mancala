@@ -1,48 +1,128 @@
 openapi: 3.0.3
 info:
-  title: Generated API
-  version: "1.0"
+  title: Mancala Api Specification
+  version: 1.0.0
+  description: Specification of MANCALA endpoints.
 paths:
   /games:
     post:
+      operationId: createNew
+      summary: Create a new game without player
+      description: Create a new game in which two player can play with each other.
       responses:
         "200":
-          description: OK
+          description: |-
+            A new game is created but is not started yet. It needs to have two players.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewGameResponse'
+
   /games/{gameId}/addPlayer/{playerName}:
     post:
+      operationId: addPlayer
+      summary: Add a new player to existing game
+      description: A player is added to the exsiting game. **Note:** Player name must be uniqe in each game
       parameters:
         - name: gameId
           in: path
           required: true
+          description: unique identifier of a game
           schema:
             type: string
         - name: playerName
           in: path
           required: true
+          description: player name which should be unique in the **gameId**
           schema:
             type: string
       responses:
         "200":
-          description: OK
+          description: New player has been successfully add to the existing game
+        "400":
+          $ref: "#/components/responses/400Error"
+
+
   /games/{gameId}/{playerName}/pit/{pitId}:
     put:
+      operationId: play
+      summary: Playing the game by choosing Mancala pit index
+      description: Enable a player to play by choosing his own Mancal pits.
       parameters:
         - name: gameId
           in: path
           required: true
+          description: unique identifier of a game
+          schema:
+            type: string
+        - name: playerName
+          in: path
+          required: true
+          description: player name which is unique in the **gameId**
           schema:
             type: string
         - name: pitId
           in: path
           required: true
+          description: id of the pit selected to make a move. Pits are numbered from 1 to 7 where 7 is the kalah (or house)
+            of the player, therefore player can only choose 1 to 6.
           schema:
             format: int32
             type: integer
-        - name: playerName
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         "200":
-          description: OK
+          description: the player successfully moved the pit's stones
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayedResponse'
+        "400":
+          $ref: "#/components/responses/400Error"
+components:
+  responses:
+    400Error:
+      description: Provides in case of any errors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      title: Error Response
+      description: The standard response model returned in case of an error
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: GameEngineStarter could not find
+    NewGameResponse:
+      type: object
+      title: NewGameResponse
+      description: |-
+        A new game is created but is not started yet.
+      properties:
+        id:
+          type: string
+          description: unique identifier of a game
+          example: a55a86c2-6622-4b29-a5af-04ab1a783e30
+        url:
+          type: string
+          description: link to the game created
+          example: http://localhost:8080/games/a55a86c2-6622-4b29-a5af-04ab1a783e30
+    PlayedResponse:
+      type: object
+      title: PlayResponse
+      description: The standard success response model returned in case of playing a pit.
+      properties:
+        id:
+          type: string
+          description: unique identifier of a game
+        url:
+          type: string
+          description: link to the game created
+        status:
+          type: object
+          description: Mancala board status. Pits are numbered from 1 to 14 where 7 and 14 are the kalah (or house) of each player.
+          example: {"1":0,"2":7,"3":7,"4":7,"5":7,"6":7,"7":1,"8":0,"9":6,"10":6,"11":6,"12":6,"13":6,"14":6}
+

@@ -12,7 +12,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 @QuarkusTest
-public class PlayerResourceTest extends AbstractGameIT {
+public class GameResourcePlayTest extends AbstractGameIT {
 
     private final String player1 = "milad";
     private final String player2 = "Elena";
