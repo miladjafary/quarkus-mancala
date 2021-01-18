@@ -57,14 +57,14 @@ public class GameManagerService {
     }
 
     public Map<String, Integer> play(String gameId, String player, Integer pitIndex) {
-        String errorMessage = String.format("Game with id [%s] could not find", gameId);
+        String errorMessage = String.format("Game with id [%s] could not find or has not started yet.", gameId);
         GameEngine gameEngine = gameEngineRepository.findById(gameId)
                                                     .orElseThrow(() -> new GameManagerException(errorMessage));
         try {
             gameEngine.play(player, pitIndex);
             return gameEngine.getBoardStatusOf(player);
             //fireBoardChangeEvent
-        } catch (GameEngineException exception) {
+        } catch (IllegalArgumentException | GameEngineException exception) {
             throw new GameManagerException(exception);
         }
     }

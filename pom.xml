@@ -6,25 +6,24 @@
   <artifactId>mancala</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <properties>
-    <surefire-plugin.version>2.22.1</surefire-plugin.version>
-    <maven.compiler.target>11</maven.compiler.target>
-    <quarkus.platform.version>1.10.5.Final</quarkus.platform.version>
-    <maven.compiler.source>11</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <maven.compiler.parameters>true</maven.compiler.parameters>
-    <quarkus-plugin.version>1.10.5.Final</quarkus-plugin.version>
+    <!--  Maven config  -->
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
-    <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+    <maven.compiler.parameters>true</maven.compiler.parameters>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <surefire-plugin.version>2.22.1</surefire-plugin.version>
+
+    <quarkus-plugin.version>1.10.5.Final</quarkus-plugin.version>
     <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
   </properties>
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>${quarkus.platform.group-id}</groupId>
-        <artifactId>${quarkus.platform.artifact-id}</artifactId>
-        <version>${quarkus.platform.version}</version>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-universe-bom</artifactId>
+        <version>1.10.5.Final</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -46,6 +45,10 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -108,7 +111,6 @@
               <goal>prepare-agent</goal>
             </goals>
           </execution>
-          <!-- attached to Maven test phase -->
           <execution>
             <id>report</id>
             <phase>test</phase>

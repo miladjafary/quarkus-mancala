@@ -12,20 +12,20 @@ public class GameEngineBoardStatusTest extends AbstractGameEngineTest {
 
     @Test
     public void testSuccessGetBoardStatusFromPlayerPointOfView() throws GameEngineException {
-        final Integer PIT_INDEX = 1;
+        final Integer PIT_INDEX = 3;
         Map<String, Integer> expectedPlayerBoardStatus = new HashMap<>() {{
             //player playground
-            put("1", 0);
-            put("2", 7);
-            put("3", 7);
+            put("1", 6);
+            put("2", 6);
+            put("3", 0);
             put("4", 7);
             put("5", 7);
             put("6", 7);
             put("7", 1);
 
             //opponent playground
-            put("8", 6);
-            put("9", 6);
+            put("8", 7);
+            put("9", 7);
             put("10", 6);
             put("11", 6);
             put("12", 6);
@@ -40,24 +40,24 @@ public class GameEngineBoardStatusTest extends AbstractGameEngineTest {
 
     @Test
     public void testSuccessGetBoardStatusFromOpponentPointOfView() throws GameEngineException {
-        final Integer PIT_INDEX = 1;
+        final Integer PIT_INDEX = 3;
         Map<String, Integer> expectedOpponentBoardStatus = new HashMap<>() {{
             //opponent playground
             put("1", 6);
             put("2", 6);
             put("3", 6);
             put("4", 6);
-            put("5", 6);
-            put("6", 6);
+            put("5", 7);
+            put("6", 7);
             put("7", 0);
 
             //player playground
-            put("8", 0);
+            put("8", 7);
             put("9", 7);
             put("10", 7);
-            put("11", 7);
-            put("12", 7);
-            put("13", 7);
+            put("11", 0);
+            put("12", 6);
+            put("13", 6);
             put("14", 1);
         }};
         gameEngine.play(player1, PIT_INDEX);
@@ -101,13 +101,14 @@ public class GameEngineBoardStatusTest extends AbstractGameEngineTest {
             put("7", 0);
 
             //player playground
-            put("8", 0);
+            put("8", 7);
             put("9", 7);
             put("10", 7);
             put("11", 7);
             put("12", 7);
-            put("13", 7);
+            put("13", 0);
             put("14", 1);
+
         }};
         gameEngine.play(player1, PIT_INDEX);
         String opponentPlayer = gameEngine.findOpponentBy(player1);

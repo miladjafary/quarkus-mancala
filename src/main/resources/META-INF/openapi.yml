@@ -1,0 +1,48 @@
+openapi: 3.0.3
+info:
+  title: Generated API
+  version: "1.0"
+paths:
+  /games:
+    post:
+      responses:
+        "200":
+          description: OK
+  /games/{gameId}/addPlayer/{playerName}:
+    post:
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: playerName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /games/{gameId}/{playerName}/pit/{pitId}:
+    put:
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pitId
+          in: path
+          required: true
+          schema:
+            format: int32
+            type: integer
+        - name: playerName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK

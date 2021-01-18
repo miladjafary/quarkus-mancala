@@ -4,6 +4,7 @@ import com.miladjafari.mancala.sdk.Pit;
 import com.miladjafari.mancala.sdk.Playground;
 import com.miladjafari.mancala.sdk.exception.GameEngineException;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -42,19 +43,33 @@ public class GameEngine {
         Playground ownerPlayground = players.get(player);
         Playground opponentPlayground = players.get(findOpponentBy(player));
 
-        ownerPlayground.getAllPits()
-                       .forEach(pit -> {
-                           int pitIndex = boardStatus.size() + 1;
-                           boardStatus.put(Integer.toString(pitIndex), pit.getCountOfStones());
-                       });
+        sortAndAddPlaygroundsPitToBoardStatus(ownerPlayground,
+                                              boardStatus,
+                                              Comparator.comparingInt(Pit::getIndex));
 
-        opponentPlayground.getAllPits()
-                          .forEach(pit -> {
-                              int pitIndex = boardStatus.size() + 1;
-                              boardStatus.put(Integer.toString(pitIndex), pit.getCountOfStones());
-                          });
+        sortAndAddPlaygroundsPitToBoardStatus(opponentPlayground,
+                                              boardStatus,
+                                              Comparator.comparingInt(Pit::getIndex).reversed());
 
         return boardStatus;
+    }
+
+    private void sortAndAddPlaygroundsPitToBoardStatus(
+            Playground playground,
+            Map<String, Integer> boardStatus,
+            Comparator<Pit> comparator
+    ) {
+        //add small pits
+        playground.getSmallPits()
+                  .stream()
+                  .sorted(comparator)
+                  .forEach(pit -> {
+                      int pitIndex = boardStatus.size() + 1;
+                      boardStatus.put(Integer.toString(pitIndex), pit.getCountOfStones());
+                  });
+
+        //add big pit
+        boardStatus.put(Integer.toString(boardStatus.size() + 1), playground.getBigPit().getCountOfStones());
     }
 
     public void play(String player, Integer selectedPitIndex) throws GameEngineException {
