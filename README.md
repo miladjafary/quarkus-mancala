@@ -24,9 +24,9 @@ The application is now runnable using `java -jar target/mancala-1.0.0-SNAPSHOT-r
 # Mancala REST API
 
 There are some REST api in this project to manage the game. You can find out the API specification from the
-[`src/main/resources/META-INF/openapi.yml`]()
+[`src/main/resources/META-INF/openapi.yml`](https://github.com/miladjafary/quarkus-mancala/blob/master/src/main/resources/META-INF/openapi.yml)
 
-Besides, once your application is started, you can make a request to the default `/openapi` endpoint.
+Besides, once your application is started, you can make a request to the default `/openapi` endpoint to download the API specification
 ```
 curl http://localhost:8080/openapi
 ```
