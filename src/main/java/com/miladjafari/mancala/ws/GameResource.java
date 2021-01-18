@@ -14,9 +14,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.logging.Logger;
 
 @Path("/")
 public class GameResource {
+
+    private static final Logger logger = Logger.getLogger(GameManagerService.class.getName());
 
     @Inject
     GameManagerService gameManagerService;
@@ -28,7 +31,7 @@ public class GameResource {
         String gameId = gameManagerService.createNewRoom();
         JsonObject response = Json.createObjectBuilder()
                                   .add("id", gameId)
-                                  .add("uri", uriInfo.getAbsolutePath() + "/" + gameId)
+                                  .add("uri", uriInfo.getBaseUri() + "games/" + gameId)
                                   .build();
         return Response.created(uriInfo.getBaseUri()).entity(response).build();
     }
@@ -44,6 +47,7 @@ public class GameResource {
             gameManagerService.addPlayer(gameId, playerNames);
             return Response.ok().build();
         } catch (GameManagerException exception) {
+            logger.severe(exception.getMessage());
             JsonObject errorResponse = Json.createObjectBuilder()
                                            .add("error", exception.getMessage())
                                            .build();

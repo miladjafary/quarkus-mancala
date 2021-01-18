@@ -6,7 +6,7 @@ import com.miladjafari.mancala.service.GameManagerService;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.ws.rs.POST;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -15,9 +15,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.Map;
+import java.util.logging.Logger;
 
 @Path("/")
 public class PlayerResource {
+
+    private static final Logger logger = Logger.getLogger(GameManagerService.class.getName());
 
     @Inject
     GameManagerService gameManagerService;
@@ -26,14 +30,22 @@ public class PlayerResource {
     @Path("/games/{gameId}/{playerName}/pit/{pitId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response play(
+            @Context UriInfo uriInfo,
             @PathParam("gameId") String gameId,
             @PathParam("playerName") String playerNames,
             @PathParam("pitId") Integer pit
     ) {
         try {
-            gameManagerService.play(gameId, playerNames, pit);
-            return Response.ok().build();
+            Map<String, Integer> gameBoardStatus = gameManagerService.play(gameId, playerNames, pit);
+            JsonObject response = Json.createObjectBuilder()
+                                      .add("id", gameId)
+                                      .add("uri", uriInfo.getBaseUri() + "games/" + gameId)
+                                      .add("status", toJson(gameBoardStatus))
+                                      .build();
+
+            return Response.ok(response).build();
         } catch (GameManagerException exception) {
+            logger.severe(exception.getMessage());
             JsonObject errorResponse = Json.createObjectBuilder()
                                            .add("error", exception.getMessage())
                                            .build();
@@ -43,4 +55,10 @@ public class PlayerResource {
         }
     }
 
+    private JsonObjectBuilder toJson(Map<String, Integer> gameBoardStatus) {
+        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+        gameBoardStatus.forEach(jsonObjectBuilder::add);
+
+        return jsonObjectBuilder;
+    }
 }

@@ -4,19 +4,22 @@ import com.miladjafari.mancala.sdk.Pit;
 import com.miladjafari.mancala.sdk.Playground;
 import com.miladjafari.mancala.sdk.exception.GameEngineException;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 public class GameEngine {
-
-    private final Map<String, Playground> players;
-    private String nextTurn;
-    private Boolean isGameOver = false;
-
     private final Consumer<Map<String, Playground>> onGameOver;
+    private final Map<String, Playground> players;
 
-    GameEngine(Map<String, Playground> players, String firstTurn, Consumer<Map<String, Playground>> onGameOver) {
+    private Boolean isGameOver = false;
+    private String nextTurn;
+
+    GameEngine(
+            Map<String, Playground> players,
+            String firstTurn,
+            Consumer<Map<String, Playground>> onGameOver) {
         this.players = players;
         this.nextTurn = firstTurn;
         this.onGameOver = onGameOver;
@@ -34,6 +37,26 @@ public class GameEngine {
         return (Optional.ofNullable(nextTurn).isPresent() && nextTurn.equals(player));
     }
 
+    public Map<String, Integer> getBoardStatusOf(String player) {
+        Map<String, Integer> boardStatus = new HashMap<>();
+        Playground ownerPlayground = players.get(player);
+        Playground opponentPlayground = players.get(findOpponentBy(player));
+
+        ownerPlayground.getAllPits()
+                       .forEach(pit -> {
+                           int pitIndex = boardStatus.size() + 1;
+                           boardStatus.put(Integer.toString(pitIndex), pit.getCountOfStones());
+                       });
+
+        opponentPlayground.getAllPits()
+                          .forEach(pit -> {
+                              int pitIndex = boardStatus.size() + 1;
+                              boardStatus.put(Integer.toString(pitIndex), pit.getCountOfStones());
+                          });
+
+        return boardStatus;
+    }
+
     public void play(String player, Integer selectedPitIndex) throws GameEngineException {
         Playground ownerPlayground = players.get(player);
         Playground opponentPlayground = players.get(findOpponentBy(player));
@@ -45,7 +68,6 @@ public class GameEngine {
         if (!isThePlayerTurn(player)) {
             throw new GameEngineException(String.format("It is not \"%s\" turn", player));
         }
-
 
         Pit pit = ownerPlayground.getPit(selectedPitIndex);
         validatingSelectedPit(pit);
