@@ -5,7 +5,7 @@ angular.module('components', [])
         restrict: 'E',
         transclude: true,
         scope: {},
-        templateUrl: 'app/newgame.template.html',
+        templateUrl: 'app/new-game.template.html',
         replace: true,
         controller: function ($scope, $element, $http) {
           $scope.alert = {
@@ -32,12 +32,16 @@ angular.module('components', [])
             }
           };
 
-          let onError = function (response) {
+          let onError = function (errorResponse) {
+            showError(errorResponse.data.error);
+          };
+
+          let showError= function (errorMessage) {
             $scope.alert.reset();
             $scope.alert.type = 'danger';
             $scope.alert.show = true;
-            $scope.alert.messages.push(response.data.error);
-          };
+            $scope.alert.messages.push(errorMessage);
+          }
 
           let createNewGame = function (onSuccessCallback) {
             $http.post('/games/')
@@ -48,28 +52,35 @@ angular.module('components', [])
 
           $scope.startNewGame = function () {
             let playerName = $scope.playerName;
-            createNewGame(function (response) {
-              let gameId = response.id;
-              let gameUrl = response.url;
-              let addPlayerApiUrl = `/games/${gameId}/addPlayer/${playerName}`;
 
-              $http.post(addPlayerApiUrl)
-                  .then(function onSuccess() {
-                    $scope.alert.reset();
+            if (!playerName) {
+              showError("Player Name is required")
+            } else {
+              createNewGame(function (response) {
+                let gameId = response.id;
+                let gameUrl = response.url;
 
-                    $scope.visibleFormPanel = false;
-                    $scope.waitingPanel.visible = true;
-                    $scope.waitingPanel.gameUrl = gameUrl;
-                    $scope.waitingPanel.gameId = gameId;
-                    $scope.waitingPanel.playerName = playerName;
-                  }, onError);
-            });
+                let addPlayerApiUrl = `/games/${gameId}/addPlayer/${playerName.trim()}`;
+
+                $http.post(addPlayerApiUrl)
+                    .then(function onSuccess() {
+                      $scope.alert.reset();
+
+                      $scope.visibleFormPanel = false;
+                      $scope.waitingPanel.visible = true;
+                      $scope.waitingPanel.gameUrl = gameUrl;
+                      $scope.waitingPanel.gameId = gameId;
+                      $scope.waitingPanel.playerName = playerName;
+                    }, onError);
+              });
+            }
           }
 
           $scope.restartGame = function () {
             $scope.visibleFormPanel = true;
-            $scope.waitingPanel.visible = false;
-            $scope.gameUrl = "";
+            $scope.waitingPanel.reset();
+            $scope.playerName = "";
+
           }
         }
       };

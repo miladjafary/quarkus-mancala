@@ -1,0 +1,39 @@
+<div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-{{alert.type}}" ng-show="alert.show">
+                <ui>
+                    <li ng-repeat="message in alert.messages">{{message}}</li>
+                </ui>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" style="margin-bottom:10px" >
+            <form ng-submit="startNewGame()">
+                <div class="col-md-12 col-xs-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="fa fa-list-alt" aria-hidden="true"></span>
+                            Joining Game
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="gameId">Please Game Id:</label>
+                                <input id="gameId" type="text" ng-model="form.gameId"
+                                       class="form-control"
+                                       placeholder="Game Id" required>
+                                <label for="playerName">Please enter your name:</label>
+                                <input id="playerName" type="text" ng-model="form.playerName"
+                                       class="form-control"
+                                       placeholder="player name" required>
+                            </div>
+                            <input class="btn btn-primary col-md-2" type="submit" value="Play Game"/>
+                            <a class="btn btn-success col-md-2" href="/index.html">New Game</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
