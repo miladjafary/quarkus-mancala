@@ -29,7 +29,6 @@
                 </div>
             </div>
         </div>
-
     </div>
     <div class="row">
         <div class="col-md-12" style="margin-bottom:10px" ng-show="visibleFormPanel">
@@ -38,16 +37,17 @@
                     <div class="card">
                         <div class="card-header">
                             <span class="fa fa-list-alt" aria-hidden="true"></span>
-                            Player
+                            New Game
                         </div>
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="playerName">Please enter your name:</label>
                                 <input id="playerName" type="text" ng-model="playerName"
-                                       class="form-control"
+                                       class="form-control" required
                                        placeholder="player name">
                             </div>
-                            <input class="btn btn-primary col-md-2" type="submit" value="Play Game"/>
+                            <input class="btn btn-primary col-md-2" type="submit" value="New Game"/>
+                            <a class="btn btn-success col-md-2" href="/join-game.html">Join the Game</a>
                         </div>
                     </div>
                 </div>
