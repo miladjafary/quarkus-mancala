@@ -1,0 +1,64 @@
+<div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-{{alert.type}}" ng-show="alert.show">
+                <ui>
+                    <li ng-repeat="message in alert.messages">{{message}}</li>
+                </ui>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="board.visible">
+        <div class="col-md-2 col-xs-12">
+            <div class="card">
+                <div class="card-header">
+                    <span class="fa fa-user-circle" aria-hidden="true"></span>
+                    {{board.opponent}}
+                    <div ng-hide="board.isYourTurn">
+                        <span class="badge badge-primary"><label>Turn</label></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a href="#" class="btn btn-primary col-md-12">{{board.pits["14"]}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 col-xs-12">
+            <div class="card">
+                <div class="card-body">
+                    <div id="opponentPlayground" class="row" style="margin-bottom:10px">
+                        <div class="col-md-2" data-ng-repeat="pitIndex in [13,12,11,10,9,8]">
+                            <div class="btn btn-primary col-md-12" >{{board.pits[pitIndex]}}</div>
+                        </div>
+                    </div>
+                    <div id="ownerPlayground" class="row" >
+                        <div class="col-md-2" data-ng-repeat="pitIndex in [1,2,3,4,5,6]">
+                            <button id="enterGameBoard"
+                                    class="btn {{board.isYourTurn ? 'btn-success':'btn-secondary'}} col-md-12 "
+                                    ng-click="play(pitIndex)">
+                                {{board.pits[pitIndex]}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-xs-12">
+            <div class="card">
+                <div class="card-header">
+                    <span class="fa fa-user-circle" aria-hidden="true"></span>
+                    You ({{board.player}})
+                    <div ng-show="board.isYourTurn">
+                        <span class="badge badge-success">Turn</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a href="#"
+                       class="btn {{board.isYourTurn ? 'btn-success':'btn-secondary'}} col-md-12">
+                        {{board.pits["7"]}}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

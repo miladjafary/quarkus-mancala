@@ -1,5 +1,6 @@
 package com.miladjafari.mancala.ws;
 
+import com.miladjafari.mancala.dto.GameInfo;
 import com.miladjafari.mancala.sdk.exception.GameManagerException;
 import com.miladjafari.mancala.service.GameManagerService;
 
@@ -7,6 +8,7 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -94,5 +96,26 @@ public class GameResource {
         gameBoardStatus.forEach(jsonObjectBuilder::add);
 
         return jsonObjectBuilder;
+    }
+
+    @GET
+    @Path("/games/{gameId}/{playerName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getGameInfo(
+            @PathParam("gameId") String gameId,
+            @PathParam("playerName") String playerNames
+    ) {
+        try {
+            GameInfo gameInfo = gameManagerService.getGameInfo(gameId, playerNames);
+            return Response.ok(gameInfo).build();
+        } catch (GameManagerException exception) {
+            logger.severe(exception.getMessage());
+            JsonObject errorResponse = Json.createObjectBuilder()
+                                           .add("error", exception.getMessage())
+                                           .build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity(errorResponse)
+                           .build();
+        }
     }
 }

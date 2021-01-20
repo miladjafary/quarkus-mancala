@@ -1,5 +1,6 @@
 package com.miladjafari.mancala.service;
 
+import com.miladjafari.mancala.dto.GameInfo;
 import com.miladjafari.mancala.repository.GameEngineRepository;
 import com.miladjafari.mancala.repository.GameEngineStarterRepository;
 import com.miladjafari.mancala.sdk.exception.GameEngineException;
@@ -70,5 +71,29 @@ public class GameManagerService {
         } catch (IllegalArgumentException | GameEngineException exception) {
             throw new GameManagerException(exception);
         }
+    }
+
+    public GameInfo getGameInfo(String gameId, String player) {
+        String errorMessage = String.format("Game with id [%s] could not find or has not started yet.", gameId);
+        GameEngine gameEngine = gameEngineRepository.findById(gameId)
+                                                    .orElseThrow(() -> new GameManagerException(errorMessage));
+
+        try {
+            Map<String, Integer> boardStatus = gameEngine.getBoardStatusOf(player);
+
+            GameInfo gameInfo = new GameInfo();
+            gameInfo.setGameId(gameId);
+            gameInfo.setPlayer(player);
+            gameInfo.setOpponent(gameEngine.findOpponentBy(player));
+
+            gameInfo.setBoardStatus(boardStatus);
+            gameInfo.setNextTurn(gameEngine.getNextTurn());
+            gameInfo.setGameOver(gameEngine.isGameOver());
+
+            return gameInfo;
+        } catch (GameEngineException exception) {
+            throw new GameManagerException(exception);
+        }
+
     }
 }
