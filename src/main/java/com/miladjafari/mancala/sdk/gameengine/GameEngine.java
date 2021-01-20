@@ -27,7 +27,7 @@ public class GameEngine {
     /**
      * Keeps status of running game, it will be true if game is over
      */
-    private Boolean isGameOver = false;
+    private boolean isGameOver = false;
 
     /**
      * Keeps next player turn.
@@ -55,6 +55,10 @@ public class GameEngine {
         return (Optional.ofNullable(nextTurn).isPresent() && nextTurn.equals(player));
     }
 
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
     /**
      * Return board status from player point of view in a clockwise in which pit #7 is the player big pit
      * and pit #14 is the opponent big pit. pits number 1 to 6 is the player's small pits and pit 8 to 13 is
@@ -75,8 +79,12 @@ public class GameEngine {
      * @param player name of player
      * @return map of pit index with number of stones on each of them from player point of view.
      */
-    public Map<String, Integer> getBoardStatusOf(String player) {
+    public Map<String, Integer> getBoardStatusOf(String player) throws GameEngineException {
         Map<String, Integer> boardStatus = new HashMap<>();
+        if (!players.containsKey(player)) {
+            throw new GameEngineException(String.format("Player '%s' does not exist in this game", player));
+        }
+
         Playground ownerPlayground = players.get(player);
         Playground opponentPlayground = players.get(findOpponentBy(player));
 
@@ -111,17 +119,19 @@ public class GameEngine {
 
     /**
      * Enable a player to play the stones of a pit
-     * @param player player name
+     *
+     * @param player           player name
      * @param selectedPitIndex selected pit to move its stones to other pits
-     *
-     * @throws GameEngineException
-     *  <ul>
-     *      <li>in case of game is over</li>
-     *      <li>in case of not player's turn</li>
-     *  </ul>
-     *
+     * @throws GameEngineException <ul>
+     *                                  <li>in case of game is over</li>
+     *                                  <li>in case of not player's turn</li>
+     *                              </ul>
      */
     public void play(String player, Integer selectedPitIndex) throws GameEngineException {
+        if (!players.containsKey(player)) {
+            throw new GameEngineException(String.format("Player '%s' does not exist in this game", player));
+        }
+
         Playground ownerPlayground = players.get(player);
         Playground opponentPlayground = players.get(findOpponentBy(player));
 
@@ -130,7 +140,7 @@ public class GameEngine {
         }
 
         if (!isThePlayerTurn(player)) {
-            throw new GameEngineException(String.format("It is not \"%s\" turn", player));
+            throw new GameEngineException(String.format("It is not '%s' turn", player));
         }
 
         Pit pit = ownerPlayground.getPit(selectedPitIndex);
@@ -172,6 +182,7 @@ public class GameEngine {
 
     /**
      * Finds the player's opponent
+     *
      * @param currentPlayer player's name
      * @return opponent player
      */

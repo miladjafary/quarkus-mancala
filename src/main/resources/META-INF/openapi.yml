@@ -78,6 +78,35 @@ paths:
                 $ref: '#/components/schemas/PlayedResponse'
         "400":
           $ref: "#/components/responses/400Error"
+
+  /games/{gameId}/{playerName}:
+    get:
+      operationId: getGameInfo
+      summary: Return full information about the game
+      description: Return full information about the game.
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          description: unique identifier of a game
+          schema:
+            type: string
+        - name: playerName
+          in: path
+          required: true
+          description: player name which is unique in the **gameId**
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Return full game information object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameInfo'
+        "400":
+          $ref: "#/components/responses/400Error"
+
 components:
   responses:
     400Error:
@@ -125,4 +154,37 @@ components:
           type: object
           description: Mancala board status. Pits are numbered from 1 to 14 where 7 and 14 are the kalah (or house) of each player.
           example: {"1":0,"2":7,"3":7,"4":7,"5":7,"6":7,"7":1,"8":0,"9":6,"10":6,"11":6,"12":6,"13":6,"14":6}
+    GameInfo:
+      type: object
+      title: GameInfo
+      description: The standard success response model returned in case of success get game information.
+      properties:
+        gameId:
+          type: string
+          description: unique identifier of a game
+          example: afb43278-50cb-44e1-a210-b25dae3e4354
+        player:
+          type: string
+          description: player name
+          example: "Milad"
+        opponent:
+          type: string
+          description: opponent player name
+          example: "Elena"
+        winner:
+          type: string
+          description: it will set with winner player name at the end of the game
+          example: ""
+        status:
+          type: object
+          description: Mancala board status from player point of view. Pits are numbered from 1 to 14 where 7 and 14 are the kalah (or house) of each player.
+          example: {"1":0,"2":7,"3":7,"4":7,"5":7,"6":7,"7":1,"8":0,"9":6,"10":6,"11":6,"12":6,"13":6,"14":6}
+        nextTurn:
+          type: string
+          description: specified the next player for playing the game
+          example: "Elena"
+        isGameOver:
+          type: boolean
+          description: it set with true at the end of games otherwise it is false
+          example: false
 
