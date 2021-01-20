@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+/**
+ * Manage the whole game to enable running multiple games simultaneously
+ */
 @ApplicationScoped
 public class GameManagerService {
 

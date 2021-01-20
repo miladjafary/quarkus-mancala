@@ -5,9 +5,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Represent the playground of a player which contains list of {@link Pit}
+ */
 public class Playground {
     private List<Pit> pits = new ArrayList<>();
 
+    /**
+     * Return list of pit after selected pit.
+     * @param startPitIndex, the player selected pit.
+     * @return list of {@link Stone}
+     */
     public List<Pit> getSubPits(Integer startPitIndex) {
         if (startPitIndex <= 0 || startPitIndex > pits.size()) {
             throw new IllegalArgumentException(String.format("Invalid pit index. Number of pits is [%s]", pits.size()));
@@ -38,6 +46,10 @@ public class Playground {
         return bigPits.get(0);
     }
 
+    /**
+     * Validate all stored small pit in the player playground are empty.
+     * @return true in case all small pit would be empty otherwise return false
+     */
     public Boolean areAllSmallPitsEmpty() {
         List<Pit> nounEmptyPits = getSmallPits()
                 .stream()
@@ -63,6 +75,9 @@ public class Playground {
         return new Builder();
     }
 
+    /**
+     * Create and instance of {@link Playground} with six small {@link Pit} and one big pit
+     */
     public static class Builder {
         private Playground instance = new Playground();
 

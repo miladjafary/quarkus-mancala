@@ -11,6 +11,10 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.stream.Collectors;
 
+/**
+ * MacalaBoard is a helper class that {@link GameEngine} is used it to enable player make a move from a pit.
+ * It keeps player and opponent playground and does play on both board.
+ */
 class MancalaBoard {
     private Playground ownerPlayground;
     private Playground opponentPlayground;
@@ -37,6 +41,11 @@ class MancalaBoard {
         return lastStoneWasPushedInBigPit;
     }
 
+    /**
+     * Move stones of selected player's pit to other pits in a clockwise.
+     *
+     * @return current instance of {@link MancalaBoard}
+     */
     public MancalaBoard play() {
         List<Stone> pickedUpStones = ownerPlayground.getPit(fromPitIndex).pickUpStones();
         setLastStoneFlagAndClearOtherStonesLastFlag(pickedUpStones);

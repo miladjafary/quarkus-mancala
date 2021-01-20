@@ -8,13 +8,25 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
+/**
+ * This class is responsible to prepare a {@link GameEngine}.
+ * In another words, this is a builder for {@link GameEngine}
+ *
+ */
 public class GameEngineStarter {
     private static final Integer MAX_PLAYERS = 2;
     private static final Integer NUMBER_OF_PITS = 6;
     private static final Integer NUMBER_OF_STONE_IN_EACH_PIT = 6;
 
+    /**
+     * Keeps map of onboarded player's and their playground
+     */
     private final Map<String, Playground> players = new TreeMap<>();
     private String firstTurn;
+
+    /**
+     * Default listener which is called after the game is over
+     */
     private Consumer<Map<String, Playground>> onGameOver = players -> {
         System.out.println("GAME IS OVER !!!");
         players.forEach((player, playground) -> {
@@ -24,6 +36,12 @@ public class GameEngineStarter {
         });
     };
 
+    /**
+     * Add new player. It will controller duplicate player and prevents adding more than {@link GameEngineStarter#MAX_PLAYERS}
+     *
+     * @param player player name
+     * @return current instance of {@link GameEngineStarter}
+     */
     public GameEngineStarter addPlayer(String player) {
         if (hasTwoPlayers()) {
             throw new IllegalArgumentException(String.format("Maximum number of players is %s.", MAX_PLAYERS));
@@ -64,6 +82,11 @@ public class GameEngineStarter {
         return players.size() >= MAX_PLAYERS;
     }
 
+    /**
+     * Create an instance of {@link GameEngine}
+     * @return an instance of {@link GameEngine}
+     * @throws GameEngineStarterException in case two player do not present.
+     */
     public GameEngine start() throws GameEngineStarterException {
         if (!hasTwoPlayers()) {
             throw new GameEngineStarterException(
