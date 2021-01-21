@@ -1,5 +1,6 @@
 package com.miladjafari.mancala.service;
 
+import com.miladjafari.mancala.dto.GameEvent;
 import com.miladjafari.mancala.dto.GameInfo;
 import com.miladjafari.mancala.repository.GameEngineRepository;
 import com.miladjafari.mancala.repository.GameEngineStarterRepository;
@@ -8,6 +9,7 @@ import com.miladjafari.mancala.sdk.exception.GameEngineStarterException;
 import com.miladjafari.mancala.sdk.exception.GameManagerException;
 import com.miladjafari.mancala.sdk.gameengine.GameEngine;
 import com.miladjafari.mancala.sdk.gameengine.GameEngineStarter;
+import com.miladjafari.mancala.websocket.GameNotifier;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,6 +30,9 @@ public class GameManagerService {
 
     @Inject
     GameEngineRepository gameEngineRepository;
+
+    @Inject
+    GameNotifier gameNotifier;
 
     public String createNewRoom() {
         String gameId = UUID.randomUUID().toString();
@@ -56,7 +61,8 @@ public class GameManagerService {
             GameEngine gameEngine = gameEngineStarter.start();
             gameEngineRepository.add(gameId, gameEngine);
             logger.info(String.format("Game Engine has been started for game id [%s]", gameId));
-            //fireStartEvent
+
+            firstGameStartEvent(gameId);
         }
     }
 
@@ -66,8 +72,9 @@ public class GameManagerService {
                                                     .orElseThrow(() -> new GameManagerException(errorMessage));
         try {
             gameEngine.play(player, pitIndex);
+//            fireBoardChangeEvent(gameId);
+
             return gameEngine.getBoardStatusOf(player);
-            //fireBoardChangeEvent
         } catch (IllegalArgumentException | GameEngineException exception) {
             throw new GameManagerException(exception);
         }
@@ -94,6 +101,29 @@ public class GameManagerService {
         } catch (GameEngineException exception) {
             throw new GameManagerException(exception);
         }
+    }
 
+    private void firstGameStartEvent(String gameId) {
+        GameEvent event = GameEvent.builder()
+                                   .gameId(gameId)
+                                   .gameStarted()
+                                   .build();
+        gameNotifier.onStart(event);
+    }
+
+    private void fireBoardChangeEvent(String gameId) {
+        GameEvent event = GameEvent.builder()
+                                   .gameId(gameId)
+                                   .gameBoardChange()
+                                   .build();
+        gameNotifier.onBoardChange(event);
+    }
+
+    private void fireFinishEvent(String gameId) {
+        GameEvent event = GameEvent.builder()
+                                   .gameId(gameId)
+                                   .gameOver()
+                                   .build();
+        gameNotifier.onFinish(event);
     }
 }

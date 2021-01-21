@@ -36,7 +36,7 @@ angular.module('components', [])
             showError(errorResponse.data.error);
           };
 
-          let showError= function (errorMessage) {
+          let showError = function (errorMessage) {
             $scope.alert.reset();
             $scope.alert.type = 'danger';
             $scope.alert.show = true;
@@ -48,6 +48,18 @@ angular.module('components', [])
                 .then(function onSuccess(response) {
                   onSuccessCallback(response.data);
                 }, onError);
+          }
+
+          let openWeSocket = function (gameId, player) {
+            let webSocket = newGameWebSocket();
+            webSocket.onGameStarted = function (message) {
+              console.log(message);
+              if (message.gameId === gameId) {
+                location.href = `/game-board.html?gameId=${gameId}&player=${player}`
+              }
+            }
+
+            webSocket.open();
           }
 
           $scope.startNewGame = function () {
@@ -71,6 +83,7 @@ angular.module('components', [])
                       $scope.waitingPanel.gameUrl = gameUrl;
                       $scope.waitingPanel.gameId = gameId;
                       $scope.waitingPanel.playerName = playerName;
+                      openWeSocket(gameId, playerName);
                     }, onError);
               });
             }
@@ -80,7 +93,6 @@ angular.module('components', [])
             $scope.visibleFormPanel = true;
             $scope.waitingPanel.reset();
             $scope.playerName = "";
-
           }
         }
       };

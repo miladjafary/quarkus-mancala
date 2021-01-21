@@ -3,6 +3,9 @@ package com.miladjafari.mancala.dto;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class is used to send proper information to the Game UI
+ */
 public class GameInfo {
     private String gameId;
     private String player;
