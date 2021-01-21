@@ -12,7 +12,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.stream.Collectors;
 
 /**
- * MacalaBoard is a helper class that {@link GameEngine} is used it to enable player make a move from a pit.
+ * MancalaBoard is a helper class that {@link GameEngine} is used it to enable player make a move from a pit.
  * It keeps player and opponent playground and does play on both board.
  */
 class MancalaBoard {
