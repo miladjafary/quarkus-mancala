@@ -53,7 +53,6 @@ angular.module('components', [])
           let openWeSocket = function (gameId, player) {
             let webSocket = newGameWebSocket();
             webSocket.onGameStarted = function (message) {
-              console.log(message);
               if (message.gameId === gameId) {
                 location.href = `/game-board.html?gameId=${gameId}&player=${player}`
               }

@@ -62,7 +62,6 @@ angular.module('components', [])
             $http.put(playUrl)
                 .then(function onSuccess() {
                   $scope.alert.reset();
-                  $scope.refreshBoard();
                 }, onError);
           }
 
@@ -70,11 +69,15 @@ angular.module('components', [])
             let gameId = $scope.board.gameId;
             let player = $scope.board.player;
             let playUrl = `/games/${gameId}/${player}`;
-            $http.get(playUrl)
-                .then(function onSuccess(response) {
-                  $scope.alert.reset();
-                  setBoardByGameInfo(response.data);
-                }, onError);
+            if ($scope.board.gameOver) {
+              showError("Game Is Over. Winner is " + $scope.board.winner);
+            } else {
+              $http.get(playUrl)
+                  .then(function onSuccess(response) {
+                    $scope.alert.reset();
+                    setBoardByGameInfo(response.data);
+                  }, onError);
+            }
           }
 
           let setBoardByGameInfo = function (gameInfo) {
@@ -83,6 +86,10 @@ angular.module('components', [])
             $scope.board.isYourTurn = gameInfo["nextTurn"] === $scope.board.player;
             $scope.board.gameOver = gameInfo["gameOver"];
             $scope.board.opponent = gameInfo["opponent"];
+
+            if ($scope.board.gameOver) {
+              alert("MILAD")
+            }
           }
 
           let parseQueryString = function () {
@@ -98,10 +105,27 @@ angular.module('components', [])
             return objURL;
           };
 
+          let openWeSocket = function (gameId) {
+            let webSocket = newGameWebSocket();
+            webSocket.onBoardChange = function (message) {
+              if (message.gameId === gameId) {
+                $scope.refreshBoard();
+              }
+            }
+            webSocket.onGameOver = function (message) {
+              if (message.gameId === gameId) {
+                $scope.refreshBoard();
+              }
+            }
+
+            webSocket.open();
+          }
+
           let init = function () {
             let params = parseQueryString();
             let gameId = params["gameId"];
             let player = params["player"];
+
             if (!gameId || !player) {
               $scope.board.visible = false;
               showError("Game Id or Player Name is invalid");
@@ -109,6 +133,7 @@ angular.module('components', [])
               $scope.board.gameId = gameId;
               $scope.board.player = player;
               $scope.refreshBoard();
+              openWeSocket(gameId);
             }
 
           }

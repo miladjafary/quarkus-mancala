@@ -72,7 +72,11 @@ public class GameManagerService {
                                                     .orElseThrow(() -> new GameManagerException(errorMessage));
         try {
             gameEngine.play(player, pitIndex);
-//            fireBoardChangeEvent(gameId);
+            if (gameEngine.isGameOver()){
+                fireFinishEvent(gameId);
+            } else {
+                fireBoardChangeEvent(gameId);
+            }
 
             return gameEngine.getBoardStatusOf(player);
         } catch (IllegalArgumentException | GameEngineException exception) {
