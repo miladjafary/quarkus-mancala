@@ -18,11 +18,9 @@ public class GameEngineGameOverTest extends AbstractGameEngineTest {
         gameEngine = new GameEngineStarter()
                 .addPlayer(player1)
                 .addPlayer(player2)
-                .onGameOver(players -> {
+                .onGameOver(gameInfo -> {
                     System.out.println("[TEST] GAME IS OVER!!! ");
-                    players.forEach((player, playground) ->
-                                            System.out.printf("[TEST] %s: %d \n", player,
-                                                              playground.getBigPit().getCountOfStones()));
+                    System.out.printf("[TEST] WINNER is %s \n", gameInfo.getWinner());
                 })
                 .start();
     }

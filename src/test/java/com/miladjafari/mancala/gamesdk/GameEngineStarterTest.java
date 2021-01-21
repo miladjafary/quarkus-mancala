@@ -91,6 +91,20 @@ public class GameEngineStarterTest {
         );
     }
 
+    @Test
+    public void testFailStartEngineIfGameIdIsNotSet() {
+        String player1 = "Milad";
+        String player2 = "Michael";
+
+        assertThrows(GameEngineStarterException.class, () ->
+                new GameEngineStarter()
+                        .gameId(null)
+                        .addPlayer(player1)
+                        .addPlayer(player2)
+                        .start()
+        );
+    }
+
     private Map<String, Playground> createMockPlayers() {
         Map<String, Playground> players = new TreeMap<>();
 

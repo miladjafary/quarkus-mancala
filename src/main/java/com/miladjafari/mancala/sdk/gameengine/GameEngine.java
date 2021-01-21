@@ -1,11 +1,14 @@
 package com.miladjafari.mancala.sdk.gameengine;
 
+import com.miladjafari.mancala.dto.GameInfo;
 import com.miladjafari.mancala.sdk.Pit;
 import com.miladjafari.mancala.sdk.Playground;
 import com.miladjafari.mancala.sdk.exception.GameEngineException;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -17,7 +20,12 @@ public class GameEngine {
     /**
      * A listener that is called when game is over.
      */
-    private final Consumer<Map<String, Playground>> onGameOver;
+    private final Consumer<GameInfo> onGameOver;
+
+    /**
+     * Keep unique id of the game
+     */
+    private String gameId;
 
     /**
      * Map of players name with their {@link Playground}
@@ -34,10 +42,14 @@ public class GameEngine {
      */
     private String nextTurn;
 
+
     GameEngine(
+            String gameId,
             Map<String, Playground> players,
             String firstTurn,
-            Consumer<Map<String, Playground>> onGameOver) {
+            Consumer<GameInfo> onGameOver) {
+
+        this.gameId = gameId;
         this.players = players;
         this.nextTurn = firstTurn;
         this.onGameOver = onGameOver;
@@ -155,8 +167,7 @@ public class GameEngine {
         nextTurn = chooseNextTurnBy(player, mancalaBoard.isLastStonePushedInBigPit());
 
         if (isEndOfTheGame()) {
-            isGameOver = true;
-            onGameOver.accept(players);
+            finishingTheGame();
         }
     }
 
@@ -198,5 +209,31 @@ public class GameEngine {
 
     private String chooseNextTurnBy(String currentPlayer, Boolean isLastStonePushedInBigPit) {
         return (isLastStonePushedInBigPit) ? currentPlayer : findOpponentBy(currentPlayer);
+    }
+
+    private void finishingTheGame() {
+        isGameOver = true;
+
+        GameInfo gameInfo = new GameInfo();
+        gameInfo.setGameId(gameId);
+        gameInfo.setGameOver(true);
+        gameInfo.setWinner(findWinner(players));
+
+        onGameOver.accept(gameInfo);
+    }
+
+    private String findWinner(Map<String, Playground> players) {
+        String winner = "";
+        Integer maxNumberOfStones = 0;
+
+        for (Map.Entry<String , Playground> player : players.entrySet()) {
+            Playground playground = player.getValue();
+            if (playground.getBigPit().getCountOfStones() > maxNumberOfStones) {
+                maxNumberOfStones = playground.getBigPit().getCountOfStones();
+                winner = player.getKey();
+            }
+        }
+
+        return winner;
     }
 }

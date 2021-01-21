@@ -36,7 +36,10 @@ public class GameManagerService {
 
     public String createNewRoom() {
         String gameId = UUID.randomUUID().toString();
-        GameEngineStarter gameEngineStarter = new GameEngineStarter();
+        GameEngineStarter gameEngineStarter = new GameEngineStarter()
+                .gameId(gameId)
+                .onGameOver(this::fireFinishEvent)
+                ;
         gameEngineStarterRepository.add(gameId, gameEngineStarter);
 
         logger.info("New game has been created but not started");
@@ -62,7 +65,7 @@ public class GameManagerService {
             gameEngineRepository.add(gameId, gameEngine);
             logger.info(String.format("Game Engine has been started for game id [%s]", gameId));
 
-            firstGameStartEvent(gameId);
+            fireGameStartEvent(gameId);
         }
     }
 
@@ -72,9 +75,7 @@ public class GameManagerService {
                                                     .orElseThrow(() -> new GameManagerException(errorMessage));
         try {
             gameEngine.play(player, pitIndex);
-            if (gameEngine.isGameOver()){
-                fireFinishEvent(gameId);
-            } else {
+            if (!gameEngine.isGameOver()) {
                 fireBoardChangeEvent(gameId);
             }
 
@@ -107,7 +108,7 @@ public class GameManagerService {
         }
     }
 
-    private void firstGameStartEvent(String gameId) {
+    private void fireGameStartEvent(String gameId) {
         GameEvent event = GameEvent.builder()
                                    .gameId(gameId)
                                    .gameStarted()
@@ -123,9 +124,9 @@ public class GameManagerService {
         gameNotifier.onBoardChange(event);
     }
 
-    private void fireFinishEvent(String gameId) {
+    private void fireFinishEvent(GameInfo gameInfo) {
         GameEvent event = GameEvent.builder()
-                                   .gameId(gameId)
+                                   .gameId(gameInfo.getGameId())
                                    .gameOver()
                                    .build();
         gameNotifier.onFinish(event);
