@@ -88,7 +88,7 @@ angular.module('components', [])
             $scope.board.opponent = gameInfo["opponent"];
 
             if ($scope.board.gameOver) {
-              alert("MILAD")
+              $scope.board.winner = gameInfo["winner"];
             }
           }
 
