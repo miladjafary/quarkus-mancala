@@ -53,7 +53,7 @@ angular.module('components', [])
               $http.post(addPlayerApiUrl)
                   .then(function onSuccess() {
                     $scope.alert.reset();
-                    location.href="/index.html"
+                    location.href=`/game-board.html?gameId=${gameId}&player=${playerName}`
                   }, onError);
             }
           }
