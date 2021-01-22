@@ -127,7 +127,7 @@ public class GameManagerService {
     private void fireFinishEvent(GameInfo gameInfo) {
         GameEvent event = GameEvent.builder()
                                    .gameId(gameInfo.getGameId())
-                                   .gameOver()
+                                   .gameOver(gameInfo.getWinner())
                                    .build();
         gameNotifier.onFinish(event);
     }

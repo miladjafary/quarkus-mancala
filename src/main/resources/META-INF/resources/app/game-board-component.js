@@ -86,10 +86,6 @@ angular.module('components', [])
             $scope.board.isYourTurn = gameInfo["nextTurn"] === $scope.board.player;
             $scope.board.gameOver = gameInfo["gameOver"];
             $scope.board.opponent = gameInfo["opponent"];
-
-            if ($scope.board.gameOver) {
-              $scope.board.winner = gameInfo["winner"];
-            }
           }
 
           let parseQueryString = function () {
@@ -114,6 +110,7 @@ angular.module('components', [])
             }
             webSocket.onGameOver = function (message) {
               if (message.gameId === gameId) {
+                $scope.board.winner = message.winner;
                 $scope.refreshBoard();
               }
             }

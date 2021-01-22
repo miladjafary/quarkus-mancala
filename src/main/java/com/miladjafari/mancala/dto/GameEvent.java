@@ -1,6 +1,7 @@
 package com.miladjafari.mancala.dto;
 
 import javax.json.Json;
+import java.util.Optional;
 
 /**
  * This class is used to publish game event to clients.
@@ -25,6 +26,11 @@ public class GameEvent {
      */
     private String event = "";
 
+    /**
+     * It will set at the end of the game to report winner.
+     */
+    private String winner;
+
     public static Builder builder() {
         return new Builder();
     }
@@ -38,9 +44,11 @@ public class GameEvent {
     }
 
     public String toJson() {
+        String winner = Optional.ofNullable(this.winner).orElse("");
         return Json.createObjectBuilder()
                    .add("gameId", gameId)
                    .add("event", event)
+                   .add("winner", winner)
                    .build()
                    .toString();
     }
@@ -63,8 +71,9 @@ public class GameEvent {
             return this;
         }
 
-        public Builder gameOver() {
+        public Builder gameOver(String winner) {
             instance.event = GAME_OVER;
+            instance.winner = winner;
             return this;
         }
 
